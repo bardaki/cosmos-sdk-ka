@@ -2,6 +2,7 @@ package baseapp
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -226,8 +227,9 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	txBytes := req.GetTx()
 	txHash := sha256.Sum256(txBytes)
+	txHashHex := hex.EncodeToString(txHash[:])
 	startTime := time.Now()
-	app.logger.Error(fmt.Sprintf("CheckTx Start for %s:  %s", txHash, startTime.String()))
+	app.logger.Error(fmt.Sprintf("CheckTx Start for %s:  %s", txHashHex, startTime.String()))
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	var mode runTxMode
