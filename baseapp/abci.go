@@ -259,53 +259,44 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 // Regardless of tx execution outcome, the ResponseDeliverTx will contain relevant
 // gas execution context.
 func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliverTx) {
-	// startTime := time.Now()
-	// app.logger.Error(fmt.Sprintf("DeliverTx Start:  %s", startTime.String()))
+	startTime := time.Now()
+	app.logger.Error(fmt.Sprintf("DeliverTx Start:  %s", startTime.String()))
 
-	// defer telemetry.MeasureSince(time.Now(), "abci", "deliver_tx")
+	defer telemetry.MeasureSince(time.Now(), "abci", "deliver_tx")
 
-	// defer func() {
-	// 	for _, streamingListener := range app.abciListeners {
-	// 		if err := streamingListener.ListenDeliverTx(app.deliverState.ctx, req, res); err != nil {
-	// 			app.logger.Error("DeliverTx listening hook failed", "err", err)
-	// 		}
-	// 	}
-	// }()
+	defer func() {
+		for _, streamingListener := range app.abciListeners {
+			if err := streamingListener.ListenDeliverTx(app.deliverState.ctx, req, res); err != nil {
+				app.logger.Error("DeliverTx listening hook failed", "err", err)
+			}
+		}
+	}()
 
-	// gInfo := sdk.GasInfo{}
-	// resultStr := "successful"
+	gInfo := sdk.GasInfo{}
+	resultStr := "successful"
 
-	// defer func() {
-	// 	telemetry.IncrCounter(1, "tx", "count")
-	// 	telemetry.IncrCounter(1, "tx", resultStr)
-	// 	telemetry.SetGauge(float32(gInfo.GasUsed), "tx", "gas", "used")
-	// 	telemetry.SetGauge(float32(gInfo.GasWanted), "tx", "gas", "wanted")
-	// }()
+	defer func() {
+		telemetry.IncrCounter(1, "tx", "count")
+		telemetry.IncrCounter(1, "tx", resultStr)
+		telemetry.SetGauge(float32(gInfo.GasUsed), "tx", "gas", "used")
+		telemetry.SetGauge(float32(gInfo.GasWanted), "tx", "gas", "wanted")
+	}()
 
-	// gInfo, result, anteEvents, err := app.runTx(runTxModeDeliver, req.Tx)
-	// if err != nil {
-	// 	resultStr = "failed"
-	// 	return sdkerrors.ResponseDeliverTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, sdk.MarkEventsToIndex(anteEvents, app.indexEvents), app.trace)
-	// }
+	gInfo, result, anteEvents, err := app.runTx(runTxModeDeliver, req.Tx)
+	if err != nil {
+		resultStr = "failed"
+		return sdkerrors.ResponseDeliverTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, sdk.MarkEventsToIndex(anteEvents, app.indexEvents), app.trace)
+	}
 
-	// elapsedTime := time.Since(startTime)
-	// app.logger.Error(fmt.Sprintf("Transaction latency: %s", elapsedTime.String()))
+	elapsedTime := time.Since(startTime)
+	app.logger.Error(fmt.Sprintf("Transaction latency: %s", elapsedTime.String()))
 
-	// return abci.ResponseDeliverTx{
-	// 	GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
-	// 	GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
-	// 	Log:       result.Log,
-	// 	Data:      result.Data,
-	// 	Events:    sdk.MarkEventsToIndex(result.Events, app.indexEvents),
-	// }
-
-	app.logger.Error("Transaction passed without checkTx...")
 	return abci.ResponseDeliverTx{
-		GasWanted: 100,
-		GasUsed:   50,
-		Log:       "Transaction executed successfully",
-		Data:      []byte{},
-		Events:    []abci.Event{},
+		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
+		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
+		Log:       result.Log,
+		Data:      result.Data,
+		Events:    sdk.MarkEventsToIndex(result.Events, app.indexEvents),
 	}
 }
 
