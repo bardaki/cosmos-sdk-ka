@@ -224,8 +224,10 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+	txBytes := req.GetTx()
+	txHash := sha256.Sum256(txBytes)
 	startTime := time.Now()
-	app.logger.Error(fmt.Sprintf("CheckTx Start:  %s", startTime.String()))
+	app.logger.Error(fmt.Sprintf("CheckTx Start for %s:  %s", txHash, startTime.String()))
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	var mode runTxMode
