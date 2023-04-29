@@ -27,7 +27,7 @@ func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) 
 	txHash := sha256.Sum256(txBytes)
 	txHashHex := hex.EncodeToString(txHash[:])
 	startTime := time.Now()
-	println("\033[31m"+"BroadcastTx (kava) Start for %s:  %s", txHashHex, startTime.String()+"")
+	println("\033[31m"+"BroadcastTx (cosmos-sdk) Start for %s:  %s", txHashHex, startTime.String()+"")
 	switch ctx.BroadcastMode {
 	case flags.BroadcastSync:
 		res, err = ctx.BroadcastTxSync(txBytes)
@@ -43,7 +43,7 @@ func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) 
 	}
 
 	elapsedTime := time.Since(startTime)
-	println("\033[31m"+"BroadcastTx (kava) latency: %s", elapsedTime.String()+"")
+	println("\033[31m"+"BroadcastTx (cosmos-sdk) latency: %s", elapsedTime.String()+"")
 	return res, err
 }
 

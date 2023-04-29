@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/spf13/pflag"
@@ -86,6 +87,8 @@ func GenerateTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 // given set of messages. It will also simulate gas requirements if necessary.
 // It will return an error upon failure.
 func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
+	startTime := time.Now()
+	println("\033[32m"+"BroadcastTx (cosmos-sdk, tx.go) Start for %s: ", startTime.String()+"")
 	txf, err := prepareFactory(clientCtx, txf)
 	if err != nil {
 		return err
@@ -144,6 +147,8 @@ func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 		return err
 	}
 
+	elapsedTime := time.Since(startTime)
+	println("\033[32m"+"BroadcastTx (cosmos-sdk, tx.go) latency: %s", elapsedTime.String()+"")
 	return clientCtx.PrintProto(res)
 }
 
