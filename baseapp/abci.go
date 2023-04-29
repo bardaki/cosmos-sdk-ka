@@ -268,7 +268,11 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 // Regardless of tx execution outcome, the ResponseDeliverTx will contain relevant
 // gas execution context.
 func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliverTx) {
-
+	txBytes := req.GetTx()
+	txHash := sha256.Sum256(txBytes)
+	txHashHex := hex.EncodeToString(txHash[:])
+	startTime := time.Now()
+	app.logger.Error(fmt.Sprintf("DeliverTx Start for %s:  %s", txHashHex, startTime.String()))
 	defer telemetry.MeasureSince(time.Now(), "abci", "deliver_tx")
 
 	defer func() {
@@ -294,6 +298,9 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliv
 		resultStr = "failed"
 		return sdkerrors.ResponseDeliverTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, sdk.MarkEventsToIndex(anteEvents, app.indexEvents), app.trace)
 	}
+
+	elapsedTime := time.Since(startTime)
+	app.logger.Error(fmt.Sprintf("CheckTx latency: %s", elapsedTime.String()))
 
 	return abci.ResponseDeliverTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
