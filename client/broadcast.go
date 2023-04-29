@@ -2,8 +2,11 @@ package client
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/tendermint/tendermint/mempool"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -21,6 +24,10 @@ import (
 // an intermediate structure which is logged if the context has a logger
 // defined.
 func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) {
+	txHash := sha256.Sum256(txBytes)
+	txHashHex := hex.EncodeToString(txHash[:])
+	startTime := time.Now()
+	println("\033[31m"+"BroadcastTx (kava) Start for %s:  %s", txHashHex, startTime.String()+"")
 	switch ctx.BroadcastMode {
 	case flags.BroadcastSync:
 		res, err = ctx.BroadcastTxSync(txBytes)
@@ -35,6 +42,8 @@ func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) 
 		return nil, fmt.Errorf("unsupported return type %s; supported types: sync, async, block", ctx.BroadcastMode)
 	}
 
+	elapsedTime := time.Since(startTime)
+	println("\033[31m"+"BroadcastTx (kava) latency: %s", elapsedTime.String()+"")
 	return res, err
 }
 

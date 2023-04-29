@@ -300,7 +300,7 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliv
 	}
 
 	elapsedTime := time.Since(startTime)
-	app.logger.Error(fmt.Sprintf("CheckTx latency: %s", elapsedTime.String()))
+	app.logger.Error(fmt.Sprintf("DeliverTx latency: %s", elapsedTime.String()))
 
 	return abci.ResponseDeliverTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
