@@ -1,6 +1,7 @@
 package baseapp
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -655,8 +656,12 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 	if mode == runTxModeDeliver {
 		defer consumeBlockGas()
 	}
+	println("\033[31m"+"runTx (cosmos-sdk) Start for %s: ", string(txBytes)+"")
 
 	tx, err := app.txDecoder(txBytes)
+	res2B, _ := json.Marshal(tx)
+	println(string(res2B))
+
 	if err != nil {
 		return sdk.GasInfo{}, nil, nil, err
 	}
