@@ -656,7 +656,7 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 	if mode == runTxModeDeliver {
 		defer consumeBlockGas()
 	}
-	println("\033[31m"+"runTx (cosmos-sdk) Start for %s: ", string(txBytes)+"")
+	println("\033[31m"+"runTx (cosmos-sdk) Start for %s: ", string(txBytes[:])+"")
 
 	tx, err := app.txDecoder(txBytes)
 	res2B, _ := json.Marshal(tx)
