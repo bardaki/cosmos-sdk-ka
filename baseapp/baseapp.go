@@ -655,13 +655,13 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 	if mode == runTxModeDeliver {
 		defer consumeBlockGas()
 	}
-	println("runTx (cosmos-sdk) Start for: ")
-	fmt.Print(txBytes)
-	println("==================================================================")
+	// println("runTx (cosmos-sdk) Start for: ")
+	// fmt.Print(txBytes)
+	// println("==================================================================")
 
 	tx, err := app.txDecoder(txBytes)
-	fmt.Printf("%+v\n", tx)
-	println("==================================================================")
+	// fmt.Printf("%+v\n", tx)
+	// println("==================================================================")
 
 	if err != nil {
 		return sdk.GasInfo{}, nil, nil, err

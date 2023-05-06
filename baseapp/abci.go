@@ -229,7 +229,7 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	txHash := sha256.Sum256(txBytes)
 	txHashHex := hex.EncodeToString(txHash[:])
 	startTime := time.Now()
-	app.logger.Error(fmt.Sprintf("CheckTx Start for %s:  %s", txHashHex, startTime.String()))
+	app.logger.Error(fmt.Sprintf("CheckTx (cosmos-sdk) Start for %s:  %s", txHashHex, startTime.String()))
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
 	var mode runTxMode
@@ -251,7 +251,7 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	}
 
 	elapsedTime := time.Since(startTime)
-	app.logger.Error(fmt.Sprintf("CheckTx latency: %s", elapsedTime.String()))
+	app.logger.Error(fmt.Sprintf("CheckTx (cosmos-sdk) latency: %s", elapsedTime.String()))
 
 	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
@@ -272,7 +272,7 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliv
 	txHash := sha256.Sum256(txBytes)
 	txHashHex := hex.EncodeToString(txHash[:])
 	startTime := time.Now()
-	app.logger.Error(fmt.Sprintf("DeliverTx Start for %s:  %s", txHashHex, startTime.String()))
+	app.logger.Error(fmt.Sprintf("DeliverTx (cosmos-sdk) Start for %s:  %s", txHashHex, startTime.String()))
 	defer telemetry.MeasureSince(time.Now(), "abci", "deliver_tx")
 
 	defer func() {
@@ -300,7 +300,7 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliv
 	}
 
 	elapsedTime := time.Since(startTime)
-	app.logger.Error(fmt.Sprintf("DeliverTx latency: %s", elapsedTime.String()))
+	app.logger.Error(fmt.Sprintf("DeliverTx (cosmos-sdk) latency: %s", elapsedTime.String()))
 
 	return abci.ResponseDeliverTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
