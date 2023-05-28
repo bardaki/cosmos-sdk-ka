@@ -228,7 +228,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
-	app.Logger().Error("CheckTx", "tx", req.GetTx(), "time", time.Now())
+	app.Logger().Error("CheckTx (cosmos-sdk)", "time", time.Now())
 	var mode runTxMode
 
 	switch {
@@ -243,10 +243,11 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	}
 
 	gInfo, result, anteEvents, priority, err := app.runTx(mode, req.Tx)
+
 	if err != nil {
 		return sdkerrors.ResponseCheckTxWithEvents(err, gInfo.GasWanted, gInfo.GasUsed, anteEvents, app.trace)
 	}
-
+	app.Logger().Error("CheckTx (cosmos-sdk)", "GasWanted", gInfo.GasWanted)
 	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
