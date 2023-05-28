@@ -228,7 +228,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
-	app.Logger().Error("CheckTx (cosmos-sdk)", "time", time.Now())
+	app.Logger().Error("CheckTx (cosmos-sdk)", "time", time.Now().String())
 	var mode runTxMode
 
 	switch {
