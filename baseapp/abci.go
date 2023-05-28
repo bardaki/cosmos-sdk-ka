@@ -229,6 +229,7 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	app.Logger().Error("CheckTx (cosmos-sdk)", "time", time.Now().String())
+	fmt.Println("Current Time in String: ", time.Now().String())
 	var mode runTxMode
 
 	switch {
