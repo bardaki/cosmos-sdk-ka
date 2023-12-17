@@ -228,6 +228,10 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+	fmt.Printf("\n>>>>>>>>>>>>>>>>>>>   COSMOS-SDK CheckTx   <<<<<<<<<<<<<<<<<<<<<<<<")
+	currentTime := time.Now()
+	timeWithMilliseconds := currentTime.Format("2006-01-02 15:04:05.000")
+	fmt.Printf("\nCOSMOS-SDK CheckTx timeWithMilliseconds: %v\n", timeWithMilliseconds)
 	var mode runTxMode
 
 	switch {
@@ -262,6 +266,10 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 // Regardless of tx execution outcome, the ResponseDeliverTx will contain relevant
 // gas execution context.
 func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) (res abci.ResponseDeliverTx) {
+	fmt.Printf("\n>>>>>>>>>>>>>>>>>>>   COSMOS-SDK DeliverTx   <<<<<<<<<<<<<<<<<<<<<<<<")
+	currentTime := time.Now()
+	timeWithMilliseconds := currentTime.Format("2006-01-02 15:04:05.000")
+	fmt.Printf("\nCOSMOS-SDK DeliverTx timeWithMilliseconds: %v\n", timeWithMilliseconds)
 	gInfo := sdk.GasInfo{}
 	resultStr := "successful"
 

@@ -615,10 +615,11 @@ func (app *BaseApp) cacheTxContext(ctx sdk.Context, txBytes []byte) (sdk.Context
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
 func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, result *sdk.Result, anteEvents []abci.Event, priority int64, err error) {
-	fmt.Printf(">>>>>>>>>>>>>>>>>>>   COSMOS-SDK runTx   <<<<<<<<<<<<<<<<<<<<<<<<")
+	fmt.Printf("\n>>>>>>>>>>>>>>>>>>>   COSMOS-SDK runTx   <<<<<<<<<<<<<<<<<<<<<<<<")
+	fmt.Printf("\nmode: %v\n", mode)
 	currentTime := time.Now()
 	timeWithMilliseconds := currentTime.Format("2006-01-02 15:04:05.000")
-	fmt.Printf("COSMOS-SDK runTx timeWithMilliseconds: %v\n", timeWithMilliseconds)
+	fmt.Printf("\nCOSMOS-SDK runTx timeWithMilliseconds: %v\n", timeWithMilliseconds)
 	// NOTE: GasWanted should be returned by the AnteHandler. GasUsed is
 	// determined by the GasMeter. We need access to the context to get the gas
 	// meter so we initialize upfront.
@@ -713,6 +714,10 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 		anteEvents = events.ToABCIEvents()
 	}
 
+	currentTime2 := time.Now()
+	timeWithMilliseconds2 := currentTime2.Format("2006-01-02 15:04:05.000")
+	fmt.Printf("\nCOSMOS-SDK runTx after AnteHandler timeWithMilliseconds: %v\n", timeWithMilliseconds2)
+
 	// Create a new Context based off of the existing Context with a MultiStore branch
 	// in case message processing fails. At this point, the MultiStore
 	// is a branch of a branch.
@@ -722,6 +727,9 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 	// and we're in DeliverTx. Note, runMsgs will never return a reference to a
 	// Result if any single message fails or does not have a registered Handler.
 	result, err = app.runMsgs(runMsgCtx, msgs, mode)
+	currentTime3 := time.Now()
+	timeWithMilliseconds3 := currentTime3.Format("2006-01-02 15:04:05.000")
+	fmt.Printf("\nCOSMOS-SDK runTx after runMsgs timeWithMilliseconds: %v\n", timeWithMilliseconds3)
 	if err == nil {
 		// Run optional postHandlers.
 		//
