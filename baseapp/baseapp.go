@@ -3,6 +3,7 @@ package baseapp
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -614,6 +615,10 @@ func (app *BaseApp) cacheTxContext(ctx sdk.Context, txBytes []byte) (sdk.Context
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
 func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, result *sdk.Result, anteEvents []abci.Event, priority int64, err error) {
+	fmt.Printf(">>>>>>>>>>>>>>>>>>>   COSMOS-SDK runTx   <<<<<<<<<<<<<<<<<<<<<<<<")
+	currentTime := time.Now()
+	timeWithMilliseconds := currentTime.Format("2006-01-02 15:04:05.000")
+	fmt.Printf("COSMOS-SDK runTx timeWithMilliseconds: %v\n", timeWithMilliseconds)
 	// NOTE: GasWanted should be returned by the AnteHandler. GasUsed is
 	// determined by the GasMeter. We need access to the context to get the gas
 	// meter so we initialize upfront.
@@ -748,6 +753,8 @@ func (app *BaseApp) runTx(mode runTxMode, txBytes []byte) (gInfo sdk.GasInfo, re
 		}
 	}
 
+	elapsedTime := time.Since(currentTime)
+	fmt.Printf("\n ======================== COSMOS-SDK runTx logic execution time: %v\n", elapsedTime)
 	return gInfo, result, anteEvents, priority, err
 }
 
